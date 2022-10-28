@@ -1,0 +1,66 @@
+// Fonts
+@import url('https://fonts.bunny.net/css?family=Nunito');
+
+// Variables
+@import 'variables';
+
+// Bootstrap
+@import 'bootstrap/scss/bootstrap';
+
+// Font-awesome
+@import "@fortawesome/fontawesome-free/css/all.css";
+
+.container {
+    min-width: 340px;
+}
+
+.tomato {
+    cursor: pointer;
+}
+
+.tomato:hover {
+    color: tomato !important;
+    border-color: tomato;
+    box-shadow: 1px 1px black;
+    text-shadow: 1px 1px black;
+}
+
+.no-style {
+    display: none;
+}
+
+.btn-bl {
+    color: rgb(0, 0, 0);
+    border-radius: 10%;
+    border: .1em solid rgb(0, 0, 0);
+    margin: .5em;
+    background: transparent;
+    
+}
+
+.btn-custom {
+    color: rgb(255, 255, 255);
+    border-radius: 10%;
+    border: .1em solid white;
+    margin: .5em;
+    background: transparent;
+}
+
+.comment {
+    background: linear-gradient(90deg, rgba(148, 233, 193, 0.733) 11.2%, rgb(224, 235, 186) 91.1%);
+    border: 1px solid rgb(49, 119, 88);
+}
+.comment-cre {
+    background: linear-gradient(90deg, rgb(125, 198, 168) 11.2%, rgb(190, 198, 170) 91.1%);
+    border: 1px solid rgb(49, 119, 88);
+}
+
+.ell {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.bg-post{
+    background: linear-gradient(to top, lightgrey 0%, lightgrey 1%, #e0e0e0 26%, #efefef 48%, #d9d9d9 75%, #bcbcbc 100%);
+}
