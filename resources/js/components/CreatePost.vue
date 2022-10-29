@@ -36,22 +36,22 @@ export default {
             axios.post('/posts/', this.newPost, config).then((response) => {
                 this.errors = undefined;
                 this.success = "Post created succesfully!";
-                this.newPost = { content: '' };
-                this.remove();
+                this.newPost = { content: '', image: undefined };
+                this.imgName = '';
                 this.$emit('create-post', response.data);
             }).catch(error => {
                 this.errors = error.response.data.errors;
                 this.success = ""
             });
         },
-        remove() {
-            this.newPost.image = undefined;
+        removeImage() {
+            this.newComment.image = undefined;
             this.imgName = '';
         },
         getImage(e) {
             if (e.target.files[0]) {
                 let files = e.target.files[0] || e.dataTransfer.files;
-                this.newPost.image = files/* this.createImage(files[0]) */;
+                this.newPost.image = files;
                 this.imgName = files.name;
             }
         }
@@ -61,21 +61,18 @@ export default {
 
 <template>
     <div class="text-center"><button class="btn-bl tomato w-50" @click="opened = !opened">Create post</button></div>
-
     <div v-if="opened" class="card text-white">
         <div class="card-header bg-post">
-
             <div class="card-subtitle col-9 col-lg-10">
                 <h4><a href="#">{{ user_name }}</a></h4>
             </div>
-
         </div>
         <div class="card-body bg-dark">
             <form @submit.prevent="createPost" enctype="multipart/form-data">
                 <h4 class="card-title"><input type="text" v-model="newPost.title" placeholder="title"></h4>
                 <textarea type="text" v-model="newPost.content" style="height: 100%; width: 100%"></textarea>
                 <div v-if="imgName" class="my-2 py-2 d-flex align-items-center border ell">
-                    <i class="tomato fa-solid fa-circle-xmark fa-lg m-1" @click="remove"></i>
+                    <i class="tomato fa-solid fa-circle-xmark fa-lg m-1" @click="removeImage"></i>
                     <p class="text-white m-auto px-3">{{ imgName }}</p>
                 </div>
                 <label class="px-1 btn-custom tomato">

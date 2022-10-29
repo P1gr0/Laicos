@@ -9,6 +9,10 @@ use Illuminate\Support\Facades\File;
 
 class UserController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     /**
      * Display a listing of the resource.
      *
@@ -20,7 +24,10 @@ class UserController extends Controller
     }
 
     public function search($name){
-        return view('users.search')->with('users', User::where('name', 'like', "%$name%")->get());
+        $users = User::where('name', 'like', "%$name%")->get();
+        foreach($users as $user)
+            $user->image = $user->image ? $user->image : 'default.png';
+        return view('users.search')->with('users', $users);
     }
 
     public function getCounts(User $user){
@@ -39,9 +46,8 @@ class UserController extends Controller
             $request->image->move(public_path('images/profile'), $file_name);
         }
 
-        if(File::exists(public_path('images/profile/' . $request->user()->image))){
+        if($request->user()->image)
             File::delete(public_path('images/profile/' . $request->user()->image));
-        }
 
         $request->user()->update([
             "image" => $file_name
@@ -50,7 +56,7 @@ class UserController extends Controller
 
     public function deleteImage(Request $request, User $user)
     {
-        if(File::exists(public_path('images/profile/' . $request->user()->image))){
+        if($request->user()->image){
             File::delete(public_path('images/profile/' . $request->user()->image));
             $user->update([
                 "image" => null
@@ -94,6 +100,7 @@ class UserController extends Controller
 
     public function getPosts(User $user){
         return $user->posts->sortByDesc('created_at')->values();
+/*         $result = $user->posts()->with('user')->orderBy('created_at', 'desc')->paginate(10); */
     }
 
     /**

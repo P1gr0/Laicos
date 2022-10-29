@@ -1,5 +1,5 @@
 <template>
-    <div class="modal fade" id="img-upload" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="img-upload" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-fullscreen-md-down">
             <div class="modal-content">
                 <div class="modal-header">
@@ -11,7 +11,7 @@
                     <button class="rad" role="button" @click.prevent="showFileChooser">
                         Upload Image!
                     </button>
-                    <button class="rad" role="button" @click.prevent="rmvImage">
+                    <button v-if="this.user_image != 'default.png'" class="rad" role="button" @click.prevent="rmvImage">
                         Remove current Image!
                     </button>
                     <div v-if="imgSrc" class="content container row">
@@ -60,11 +60,13 @@
                             <div class="preview" />
                         </section>
                     </div>
-                   
-                    <div class="modal-footer">                        
+                    <div v-if="errors" class="alert alert-danger card-footer my-0">
+                        <p class="my-0" v-for="error in errors">{{ error }}</p>
+                    </div>
+                    <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button v-if="imgSrc" type="submit" class="btn rad" data-bs-dismiss="modal"
-                            @click="cropImage">Save</button>
+                        <button v-if="imgSrc" type="submit" class="btn rad"
+                            :data-bs-dismiss="this.errors ? 'modal' : ''" @click="cropImage">Save</button>
                     </div>
                 </div>
             </div>
@@ -80,37 +82,38 @@ export default {
     components: {
         VueCropper
     },
-    props: ['user_id'],
+    props: ['user_id', 'user_image'],
     data() {
         return {
             imgSrc: '',
             cropImg: '',
-            name: '',
-            obj: {}
+            imgName: '',
+            imgCropped: {},
+            errors: ''
         };
     },
     methods: {
-        rmvImage(){
-            axios.put('/rmvimage/' + this.user_id).then(response => {
+        rmvImage() {
+            axios.put('/rmvimage/' + this.user_id).then(() => {
                 location.reload();
             }).catch(error => {
-                console.log(error.response.data.errors)
+                this.errors = error.response.data.errors;
             });
         },
         cropImage() {
             // get image data for post processing, e.g. upload or setting image src
-            this.cropImg = this.$refs.cropper.getCroppedCanvas({ width: 400, height: 400, fillColor: 'white' }).toDataURL();
-            this.obj.image = utils.dataURLtoFile(this.cropImg, this.name);
+            this.cropImg = this.$refs.cropper.getCroppedCanvas({ width: 800, height: 800, fillColor: 'white' }).toDataURL();
+            // convert base64URL image obtained to an image file and save it to a variable
+            this.imgCropped.image = utils.dataURLtoFile(this.cropImg, this.imgName);
             const config = {
                 headers: {
                     'content-type': 'multipart/form-data'
                 }
             }
-            axios.post('/setimage', this.obj, config).then(response => {
+            axios.post('/setimage', this.imgCropped, config).then(() => {
                 location.reload();
             }).catch(error => {
-                console.log(error.response.data.errors)
-                this.$emit('set-img', error.response.data.errors);
+                this.errors = error.response.data.errors;
             });
         },
         flipX() {
@@ -138,7 +141,7 @@ export default {
         },
         setImage(e) {
             const file = e.target.files[0];
-            this.name = e.target.files[0].name;
+            this.imgName = e.target.files[0].name;
             console.log(file);
             if (file.type.indexOf('image/') === -1) {
                 alert('Please select an image file');

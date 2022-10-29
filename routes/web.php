@@ -5,7 +5,6 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ChatsController;
-use Illuminate\Support\Facades\Broadcast;
 use App\Http\Controllers\FriendController;
 use App\Http\Controllers\CommentController;
 

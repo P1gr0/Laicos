@@ -20,18 +20,19 @@
 
 <body>
     <div id="app">
-        <nav class="navbar navbar-expand-md navbar-light bg-post shadow-sm max-">
+        <nav class="navbar navbar-expand-md navbar-light bg-post shadow-sm">
             <div class="container">
                 <a class="navbar-brand" href="#">
-                    <img src="{{ URL('storage/logo.png') }}" alt="" width="25">
+                    <img src="{{ asset('images/logo/logo.png') }}" alt="" width="25">
                 </a>
-                <a class="navbar-brand" href="{{ url('/home') }}">
-                    <i class="tomato fa-solid fa-house-user fa-lg"></i>
-                </a>
-                <friend-requests></friend-requests>
+                @auth
+                    <a class="navbar-brand" href="{{ url('/home') }}">
+                        <i class="tomato fa-solid fa-house-user fa-lg"></i>
+                    </a>
 
-
-                <!--search-bar-->
+                    <!-- Component shows friend requests received -->
+                    <friend-requests></friend-requests>
+                @endauth
 
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
@@ -44,8 +45,6 @@
                     <div class="navbar-nav me-auto">
 
                     </div>
-
-                
 
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ms-auto">
@@ -64,9 +63,8 @@
                             @endif
                         @else
                             <li class="nav-item dropdown">
-                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#"
-                                    role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-                                    v-pre>
+                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
+                                    data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     {{ Auth::user()->name }}
                                 </a>
 
@@ -86,9 +84,10 @@
                 </div>
             </div>
         </nav>
-        
+
+        @auth
             <search-user></search-user>
-    
+        @endauth
 
         <main class="py-4">
             @yield('content')

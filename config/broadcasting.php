@@ -45,7 +45,8 @@ return [
             'client_options' => [
                 // Guzzle client options: https://docs.guzzlephp.org/en/stable/request-options.html
 
-                //Verify describes the SSL certificate verification behavior of a request. Deactivated just for localhost purpose: This is dangerous
+                //Verify describes the SSL certificate verification behavior of a request. 
+                //Deactivated verification just for localhost purpose: This is dangerous!!
                 'verify' => false 
             ],
         ],

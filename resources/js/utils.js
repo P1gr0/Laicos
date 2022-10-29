@@ -2,16 +2,19 @@ export function timeSince(date) {
     let seconds = Math.floor((new Date() - date) / 1000);
     let interval = seconds / 31536000;
 
-    if (interval > 1) return Math.floor(interval) + " years";
+    if (interval > 1) return date.toLocaleDateString([], { year: 'numeric', month: 'long', day: 'numeric' });
     interval = seconds / 2592000;
-    if (interval > 1) return Math.floor(interval) + " months";
+    if (interval > 1) return date.toLocaleDateString([], { month: 'long', day: 'numeric' });;
     interval = seconds / 86400;
-    if (interval > 1) return Math.floor(interval) + " days";
+
+    let time = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    if (interval > 1)
+        return Math.floor(interval) + "d ago at " + time;
     interval = seconds / 3600;
-    if (interval > 1) return Math.floor(interval) + " hours";
+    if (interval > 1) return 'Today at' + time;
     interval = seconds / 60;
-    if (interval > 1) return Math.floor(interval) + " minutes";
-    return Math.floor(seconds) + " seconds";
+    if (interval > 1) return Math.floor(interval) + "min ago";
+    return Math.floor(seconds) + "s ago";
 }
 
 export function linkify(text) {

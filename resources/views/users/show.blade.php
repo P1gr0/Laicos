@@ -8,8 +8,7 @@
             <h1 class="text-center fw-bold">{{ $user->name }}</h1>
             <home-card user_image="{{ $user_image }}" user_id="{{ $user->id }}" is_home="{{ false }}"></home-card>
             <div class="col-md-10">
-               <posts is_home="{{ false }}" user_id="{{ $user->id }}" user_name="{{ $user->name }}" user_image="{{ $user_image }}"
-                    is_author="{{ false }}"></posts>
+               <posts is_home="{{ false }}" is_author="{{ false }}" userj="{{ $user }}"></posts>
 
                 {{--      <div class="card">
                 <div class="card-header">{{ __('Dashboard') }}</div>

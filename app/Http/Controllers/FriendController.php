@@ -16,10 +16,14 @@ class FriendController extends Controller
      */
     public function index()
     {
+        $friends = [];
         $requests = Friend::where([['friend_id', Auth::user()->id], ['status', 'pending']])->get();
         foreach ($requests as $request) {
             $friend = User::find($request->user_id);
-            $friends[] = ['id' => $friend->id, 'image' => $friend->image, 'name' => $friend->name];
+            $friends[] = [
+                'id' => $friend->id, 
+                'image' => $friend->image ? $friend->image : 'default.png', 
+                'name' => $friend->name];
         }
 
         return $friends;
@@ -94,10 +98,6 @@ class FriendController extends Controller
     public function countRequests(){
         return Friend::where([['friend_id', Auth::user()->id], ['status', 'pending']])
         ->count();
-    }
-
-    public function getRequests(){
-
     }
 
     /**

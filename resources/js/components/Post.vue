@@ -4,11 +4,11 @@
             <div class="row d-flex align-items-center">
                 <div class="col-2 col-lg-1">
                     <img class="rounded-circle img-fluid"
-                        :src="`/images/profile/${this.user_image}`" data-holder-rendered="true">
+                        :src="`/images/profile/${this.user.image ?? 'default.png'}`" data-holder-rendered="true">
                 </div>
                 <div class="card-subtitle col-9 col-lg-10">
-                    <h4><a :href="`/users/${this.user_id}`">{{ user_name }}</a></h4>
-                    <small>@{{ getTimeFromNow(created_at) }}</small>
+                    <h4><a :href="`/users/${this.user.id}`">{{ user.name }}</a></h4>
+                    <small>{{ getTimeFromNow(created_at) }}</small>
                 </div>
                 <author-menu v-if="is_author" @update="updatePost" @remove="removePost">Post</author-menu>
             </div>
@@ -40,7 +40,7 @@
 <script>
 import * as utils from '../utils';
 export default {
-    props: ['title', 'user_name', 'created_at', 'image', 'content', 'id', 'is_author', 'user_image', 'user_id'],
+    props: ['title', 'user', 'created_at', 'image', 'content', 'id', 'is_author'],
     methods: {
         linkify(content) {
             return utils.linkify(content);

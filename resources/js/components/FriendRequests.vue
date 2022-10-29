@@ -1,9 +1,8 @@
 <template>
-
     <button class="btn-dodg tomato" data-bs-toggle="modal" data-bs-target="#req" aria-expanded="false"
         @click="getRequests">
         <i class="fa-solid fa-people-pulling fa-xl">
-            <span class="counter-lg">{{ counter }}</span>
+            <span v-if="counter" class="counter-lg">{{ counter }}</span>
         </i>
     </button>
 
@@ -15,6 +14,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body p-2">
+                    <p class="text-center" v-if="!counter">No pending friend requests</p>
                     <ul class="list-group">
                         <li v-for="request in requests" class="d-flex tomato list-group-item">
                             <img class="rounded-circle img-fluid me-2" :src="`/images/profile/${request.image}`"
@@ -34,7 +34,7 @@
 export default {
     data() {
         return {
-            counter: '',
+            counter: 0,
             requests: []
         }
     },

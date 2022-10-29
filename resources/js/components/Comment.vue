@@ -16,7 +16,7 @@
         </div>
         <div class="card-footer bg-white d-flex justify-content-between">
             <like :baseUrl="'/comments'" :id="id"></like>
-            <small>@{{ getTimeFromNow(created_at) }}</small>
+            <small>{{ getTimeFromNow(created_at) }}</small>
         </div>
 
     </div>

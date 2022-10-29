@@ -1,10 +1,9 @@
 <script>
-import { remove } from '@vue/shared';
 import { VuemojiPicker } from 'vuemoji-picker'
 export default {
     components: {
-    VuemojiPicker
-  },
+        VuemojiPicker
+    },
     data() {
         return {
             newComment: {
@@ -35,22 +34,22 @@ export default {
             this.newComment.post_id = this.post_id;
             axios.post('/comments/', this.newComment, config).then((response) => {
                 this.errors = undefined;
-                this.newComment = {content: ''};
-                this.remove();
+                this.newComment = { content: '', image: undefined };
+                this.imgName = '';
                 this.success = "Wonderful! You posted a comment!"
                 this.$emit('create-comment', response.data);
             }).catch(error => {
                 this.errors = error.response.data.errors;
             });
         },
-        remove() {
+        removeImage() {
             this.newComment.image = undefined;
             this.imgName = '';
         },
         getImage(e) {
             if (e.target.files[0]) {
                 let files = e.target.files[0] || e.dataTransfer.files;
-                this.newComment.image = files/* this.createImage(files[0]) */;
+                this.newComment.image = files;
                 this.imgName = files.name;
             }
         }
@@ -65,12 +64,12 @@ export default {
                 <textarea type="text" v-model="newComment.content" rows="3"
                     style="height: 100%; width: 100%"></textarea>
                 <div v-if="imgName" class="my-2 py-2 d-flex align-items-center border ell">
-                    <i class="tomato fa-solid fa-circle-xmark fa-lg m-1" @click="remove"></i>
+                    <i class="tomato fa-solid fa-circle-xmark fa-lg m-1" @click="removeImage"></i>
                     <p class="text-white m-auto px-3">{{ imgName }}</p>
                 </div>
                 <div class="d-flex align-items-center my-0">
                     <label class="px-1 btn-custom tomato">
-                    <i class="px-1 fa-solid fa-face-smile fa-lg" @click="openedPicker = !openedPicker"></i>
+                        <i class="px-1 fa-solid fa-face-smile fa-lg" @click="openedPicker = !openedPicker"></i>
                     </label>
                     <label class="px-1 btn-custom tomato" for="image">
                         <i class="fa-solid fa-image"></i>
