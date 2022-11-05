@@ -1,2 +1,4 @@
 images/*
-!logo/logo.png
+!images/logo/logo.png
+images/profile/*
+!images/profile
