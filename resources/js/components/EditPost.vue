@@ -6,9 +6,9 @@ export default {
     },
     data() {
         return {
-            opened: false, errors: undefined, success: '', imgName: '', openedPicker: false,
-            newPost: {
-                content: ''
+            errors: undefined, success: '', imgName: '', openedPicker: false,
+            post: {
+                updateImage: 0
             },
             pickerStyle: {
                 width: '100%',
@@ -16,37 +16,37 @@ export default {
             }
         }
     },
-    emits: ['create-post'],
-    props: ['user_name'],
+    props: ['title', 'content', 'image', 'id'],
+    mounted() {
+        this.post.content = this.content;
+        this.post.title = this.title;
+        this.imgName = this.image;
+    },
     methods: {
         handleEmojiClick(detail) {
-            this.newPost.content += detail.unicode;
+            this.post.content += detail.unicode;
         },
-        createPost() {
-            const config = {
+        editPost() {
+            this.post['_method'] = 'put';
+            axios.post('/posts/' + this.id, this.post, {
                 headers: {
                     'content-type': 'multipart/form-data'
                 }
-            }
-            this.openedPicker = false;
-            axios.post('/posts/', this.newPost, config).then(response => {
-                this.errors = undefined;
-                this.success = "Post created succesfully!";
-                this.newPost = { content: '', image: undefined };
-                this.imgName = '';
-                this.$emit('create-post', response.data);
+            }).then(response => {
+                location.assign('/home');
             }).catch(error => {
                 this.errors = error.response.data.errors;
-                this.success = '';
             });
         },
         removeImage() {
-            this.newPost.image = undefined;
+            this.post.image = undefined;
+            this.post.updateImage = 1;
             this.imgName = '';
         },
         getImage(e) {
             if (e.target.files[0]) {
-                this.newPost.image = e.target.files[0] || e.dataTransfer.files;
+                this.post.updateImage = 1;
+                this.post.image = e.target.files[0] || e.dataTransfer.files;
                 this.imgName = e.target.files[0].name;
             }
         }
@@ -55,17 +55,12 @@ export default {
 </script>
 
 <template>
-    <div class="text-center"><button class="btn-bl tomato w-50" @click="opened = !opened">Create post</button></div>
-    <div v-if="opened" class="card text-white">
-        <div class="card-header bg-post">
-            <div class="card-subtitle col-9 col-lg-10">
-                <h4><a href="#">{{ user_name }}</a></h4>
-            </div>
-        </div>
+    <div class="card text-white">
+        <div class="card-header bg-post"></div>
         <div class="card-body bg-dark">
-            <form @submit.prevent="createPost" enctype="multipart/form-data">
-                <h5 class="card-title"><input type="text" v-model="newPost.title" placeholder="title" required></h5>
-                <textarea type="text" v-model="newPost.content" style="height: 100%; width: 100%" required></textarea>
+            <form @submit.prevent="editPost" enctype="multipart/form-data">
+                <h5 class="card-title"><input type="text" v-model="post.title" placeholder="title" required></h5>
+                <textarea type="text" v-model="post.content" style="height: 100%; width: 100%" required></textarea>
                 <div v-if="imgName" class="my-2 py-2 d-flex align-items-center border ell">
                     <i class="tomato fa-solid fa-circle-xmark fa-lg m-1" @click="removeImage"></i>
                     <p class="text-white m-auto px-3">{{ imgName }}</p>
@@ -75,16 +70,13 @@ export default {
                 </label>
                 <label class="px-1 btn-custom tomato" for="image"><i class="fa-solid fa-image"></i><input type="file"
                         @change="getImage" class="no-style" id="image"></label>
-                <label class="px-1 btn-custom tomato" for="sub">Post! <i class="fa-solid fa-paper-plane"></i><input
+                <label class="px-1 btn-custom tomato" for="sub">Edit! <i class="fa-solid fa-paper-plane"></i><input
                         type="submit" class="no-style" id="sub"></label>
                 <VuemojiPicker v-if="openedPicker" :pickerStyle="pickerStyle" @emojiClick="handleEmojiClick" />
             </form>
         </div>
         <div v-if="errors" class="alert alert-danger card-footer my-0">
             <p class="my-0" v-for="error in errors">{{ error }}</p>
-        </div>
-        <div v-else-if="success" class="alert alert-success card-footer my-0">
-            <p class="my-0">{{ success }}</p>
         </div>
     </div>
 </template>

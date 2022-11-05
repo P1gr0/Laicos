@@ -1,7 +1,7 @@
 <template>
     <div style="height: 60%">
         <h5 class="mb-0">{{ status }}</h5>
-        <button class="btn btn-custom tomato" v-if="status == 'Request received'" @click="interact(true)">
+        <button v-if="status == 'Request received'" class="btn btn-custom tomato" @click="interact(true)">
             Accept
         </button>
         <button class="mt-1 btn btn-custom tomato" @click="interact(false)">
@@ -9,28 +9,18 @@
         </button>
         <div>
             <a v-if="status == 'Friend'" type="button" class="btn btn-bl tomato" href="/chat">
-               Chat! <i style="color: rgb(157, 167, 173)" class="fa-solid fa-message fa"></i>
+                Chat! <i style="color: rgb(157, 167, 173)" class="fa-solid fa-message fa"></i>
             </a>
         </div>
     </div>
 </template>
-
-<style scoped>
-.btn-custom {
-    font-weight: bold;
-    background-color: dodgerblue;
-}
-</style>
 
 <script>
 import axios from 'axios';
 export default {
     props: ['user_id'],
     data() {
-        return {
-            status: '',
-            message: ''
-        }
+        return { status: '', message: '' }
     },
     watch: {
         user_id: {
@@ -44,34 +34,31 @@ export default {
     methods: {
         getStatus() {
             axios.get('/getstatus/' + this.user_id).then((response) => {
-                this.status = response.data;
-                this.action(this.status);
+                [this.status, this.message] = response.data;
             })
-        },
-        action(status) {
-            if (status == 'Request sent') this.message = 'Cancel';
-            else if (status == 'Request received') this.message = 'Remove';
-            else if (status == 'Friend') this.message = 'Remove friend';
-            else this.message = 'Add friend'
         },
         interact(accept) {
             if (accept) // accept friend request (update)
                 axios.put('/friendship/' + this.user_id).then((response) => {
-                    this.status = 'Friend';
-                    this.action(this.status);
+                    [this.status, this.message] = response.data;
                 })
             else if (this.status == '') // send friend request (create)
                 axios.post('/friendship/', { friend: this.user_id }).then((response) => {
-                    this.status = response.data;
-                    this.action(this.status);
+                    [this.status, this.message] = response.data;
                 })
             else // cancel sent request / decline received request / remove friend (delete)
                 axios.delete('/friendship/' + this.user_id).then((response) => {
-                    this.status = '';
-                    this.action(this.status);
+                    [this.status, this.message] = response.data;
                 })
         }
     }
 }
 </script>
+
+<style scoped>
+.btn-custom {
+    font-weight: bold;
+    background-color: dodgerblue;
+}
+</style>
 

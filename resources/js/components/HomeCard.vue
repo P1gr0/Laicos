@@ -22,7 +22,7 @@
     <div class="mb-4 col-sm-4 text-center d-flex-row">
       <h3 class="text-shadow" style="color: dodgerblue">Friends <i class="fa-solid fa-users"></i></h3>
       <friendship v-if="!this.is_home" :user_id="this.user.id"></friendship>
-      <friends  :user_id="this.user.id"></friends>
+      <friends :user_id="this.user.id"></friends>
     </div>
   </div>
 
@@ -70,10 +70,12 @@ export default {
   border-radius: 50%;
   height: fit-content;
 }
+
 .text-shadow {
   text-shadow: .1rem .1rem .1rem rgba(255, 99, 71, 0.477);
   color: tomato
 }
+
 .w-50 {
   min-width: fit-content;
 }

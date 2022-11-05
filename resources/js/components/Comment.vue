@@ -40,8 +40,8 @@ export default {
                 });
         },
         updateComment() {
+            location.assign("/comments/" + this.id + "/edit");
         }
-    },
-
+    }
 }
 </script>

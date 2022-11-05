@@ -2,7 +2,11 @@
 
 namespace App\Providers;
 
-// use Illuminate\Support\Facades\Gate;
+use App\Models\Post;
+use App\Models\User;
+use App\Models\Comment;
+
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
@@ -25,6 +29,12 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        //
+        //Grant authorization to edit post/comment only to the user that created.
+        Gate::define('update_edit-post', function (User $user, Post $post) {
+            return $user->id === $post->user_id;
+        });
+        Gate::define('update_edit-comment', function (User $user, Comment $comment) {
+            return $user->id === $comment->user_id;
+        });
     }
 }

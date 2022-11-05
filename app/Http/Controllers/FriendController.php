@@ -22,11 +22,11 @@ class FriendController extends Controller
     public function getStatus($id)
     {
         if ($friend = Friend::where([['user_id', Auth::user()->id], ['friend_id', $id]])->first())
-            return ($friend->status == 'pending') ? 'Request sent' : 'Friend';
+            return ($friend->status == 'pending') ? ['Request sent', 'Cancel'] : ['Friend', 'Remove Friend'];
         else if ($friend = Friend::where([['friend_id', Auth::user()->id], ['user_id', $id]])->first())
-            return ($friend->status == 'pending') ? 'Request received' : 'Friend';
+            return ($friend->status == 'pending') ? ['Request received', 'Remove'] : ['Friend', 'Remove Friend'];
         else
-            return '';
+            return ['', 'Add Friend'];
     }
 
     /**
@@ -48,7 +48,7 @@ class FriendController extends Controller
             'status' => 'pending'
         ]);
 
-        return 'Request sent';
+        return ['Request sent', 'Cancel'];
     }
 
     /**
@@ -74,6 +74,7 @@ class FriendController extends Controller
         Friend::where([['user_id', $friend_id], ['friend_id', Auth::user()->id]])->update([
             'status' => 'accepted'
         ]);
+        return ['Friend', 'Remove Friend'];
     }
 
     /**
@@ -86,5 +87,6 @@ class FriendController extends Controller
     {
         Friend::where([['friend_id', Auth::user()->id], ['user_id', $id]])
             ->orWhere([['user_id', Auth::user()->id], ['friend_id', $id]])->delete();
+        return['', 'Add Friend'];
     }
 }

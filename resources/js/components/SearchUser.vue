@@ -11,17 +11,16 @@
 <script>
 export default {
     data() {
-        return {
-            name: ''
-        }
+        return { name: '' }
     }
 }
 </script>
 
 <style scoped>
-.form-control{
+.form-control {
     height: 2.2em;
 }
+
 .bar {
     width: 50vw;
     min-width: 340px;

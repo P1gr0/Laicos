@@ -6,20 +6,11 @@
     </div>
 </template>
 
-<style scoped>
-.liked {
-    color: crimson;
-}
-</style>
-
 <script>
 import axios from 'axios';
 export default {
     data() {
-        return {
-            likes_up: undefined,
-            liked_up: undefined
-        }
+        return { likes_up: undefined, liked_up: undefined }
     },
     mounted() {
         this.likes_up = this.likes;
@@ -37,3 +28,9 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+.liked {
+    color: crimson;
+}
+</style>

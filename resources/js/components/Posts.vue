@@ -22,7 +22,6 @@ export default {
                 if (offset) response.data.data.splice(0, offset)
                 if (!response.data.data.length) window.removeEventListener('scroll', this.onScroll);
                 this.posts.push(...response.data.data);
-                console.log(response.data.data);
             })
         },
         addPost(newPost) {
@@ -30,7 +29,6 @@ export default {
             this.posts.unshift(newPost);
         },
         onScroll() {
-            console.log((window.innerHeight + window.pageYOffset), document.body.offsetHeight)
             if ((window.innerHeight + window.pageYOffset) >= document.body.offsetHeight - 1)
                 this.getPosts();
         }

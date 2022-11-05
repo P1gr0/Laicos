@@ -1,12 +1,12 @@
 <template>
     <div class="modal fade" id="img-upload" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-fullscreen-md-down">
-            <div class="modal-content">
+            <div class="modal-content container">
                 <div class="modal-header">
-                    <h2>Choose your profile picture</h2>
+                    <h2 class="my-1">Choose your profile picture</h2>
                     <a target="_blank" href="https://github.com/Agontuk/vue-cropperjs">Github (VueCropper)</a>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body text-center">
                     <input ref="input" type="file" name="image" accept="image/*" @change="setImage" />
                     <button class="rad" role="button" @click.prevent="showFileChooser">
                         Upload Image!
@@ -14,12 +14,12 @@
                     <button v-if="this.user_image" class="rad" role="button" @click.prevent="rmvImage">
                         Remove current Image!
                     </button>
-                    <div v-if="imgSrc" class="content container row">
-                        <section class="cropper-area">
-                            <div class="img-cropper">
+                    <div v-if="imgSrc">
+                        <section>
+                            <div class="w-75 m-auto">
                                 <vue-cropper ref="cropper" :aspect-ratio="1 / 1" :src="imgSrc" preview=".preview" />
                             </div>
-                            <div class="actions">
+                            <div>
                                 <button class="rad red" role="button" @click.prevent="zoom(0.2)">
                                     <i class="fa-solid fa-magnifying-glass-plus"></i>
                                 </button>
@@ -55,19 +55,19 @@
                                 </button>
                             </div>
                         </section>
-                        <section class="preview-area mx-2">
-                            <p>Preview</p>
-                            <div class="preview" />
+                        <section>
+                            <h3 class="mt-4">Preview</h3>
+                            <div class="preview mx-auto" />
                         </section>
                     </div>
-                    <div v-if="errors" class="alert alert-danger card-footer my-0">
+                    <div v-if="errors" class="alert alert-danger my-2">
                         <p class="my-0" v-for="error in errors">{{ error }}</p>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button v-if="imgSrc" type="submit" class="btn rad"
-                            :data-bs-dismiss="this.errors ? 'modal' : ''" @click="cropImage">Save</button>
-                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button v-if="imgSrc" type="submit" class="btn rad" :data-bs-dismiss="this.errors ? 'modal' : ''"
+                        @click="cropImage">Save</button>
                 </div>
             </div>
         </div>
@@ -84,13 +84,7 @@ export default {
     },
     props: ['user_id', 'user_image'],
     data() {
-        return {
-            imgSrc: '',
-            cropImg: '',
-            imgName: '',
-            imgCropped: {},
-            errors: ''
-        };
+        return { imgSrc: '', cropImg: '', imgName: '', imgCropped: {}, errors: '' };
     },
     methods: {
         rmvImage() {
@@ -142,7 +136,6 @@ export default {
         setImage(e) {
             const file = e.target.files[0];
             this.imgName = e.target.files[0].name;
-            console.log(file);
             if (file.type.indexOf('image/') === -1) {
                 alert('Please select an image file');
                 return;
@@ -206,35 +199,8 @@ input[type="file"] {
     border-color: purple;
 }
 
-.content {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-}
-
-.cropper-area {
-    width: 75%;
-}
-
 .preview {
-    width: 100%;
     height: calc(372px * (9 / 16));
     overflow: hidden;
-}
-
-.preview-area {
-    width: 307px;
-    align-self: flex-start;
-    justify-self: flex-start;
-}
-
-.preview-area p {
-    font-size: 1.25rem;
-    margin: 0;
-    margin-bottom: 1rem;
-}
-
-.preview-area p:last-of-type {
-    margin-top: 1rem;
 }
 </style>

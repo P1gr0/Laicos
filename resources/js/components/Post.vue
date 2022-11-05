@@ -61,6 +61,7 @@ export default {
             location.assign("/posts/" + this.id);
         },
         updatePost() {
+            location.assign("/posts/" + this.id + "/edit");
         }
     }
 }

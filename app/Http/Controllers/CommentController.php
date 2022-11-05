@@ -8,6 +8,7 @@ use App\Models\Comment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Gate;
 
 class CommentController extends Controller
 {
@@ -26,7 +27,7 @@ class CommentController extends Controller
     {
         $request->validate([
             'content' => 'required',
-            'image' => 'mimes:jpeg,jpg,png,gif,mpeg|image|max:20000'
+            'image' => 'mimes:jpeg,jpg,png,gif,bmp,svg|image|max:20000'
         ]);
 
         $file_name = NULL;
@@ -74,7 +75,10 @@ class CommentController extends Controller
      */
     public function edit(Comment $comment)
     {
-        //
+        if (!Gate::allows('update_edit-comment', $comment))
+            abort(403);
+        
+        return view("comments.edit")->with('comment', $comment);
     }
 
     /**
@@ -86,7 +90,26 @@ class CommentController extends Controller
      */
     public function update(Request $request, Comment $comment)
     {
-        //
+        if (!Gate::allows('update_edit-comment', $comment))
+            abort(403);
+        
+        $request->validate([
+            'content' => 'required',
+            'image' => 'mimes:jpeg,jpg,png,gif,bmp,svg|image|max:20000'
+        ]);
+
+        if($request->updateImage) {
+            $file_name = NULL;
+            if ($comment->image)
+                File::delete(public_path('images/' . $comment->image));
+            if ($request->hasFile('image')) {
+                $file_name = time() . '-' . $request->file('image')->getClientOriginalName();
+                $request->image->move(public_path('images'), $file_name);
+            }
+            $comment->update(['image' => $file_name]);
+        }
+
+        $comment->update(['content' => htmlspecialchars($request->content)]);
     }
 
     /**

@@ -5,12 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use App\Models\User;
 
-use App\Models\Friend;
-use GuzzleHttp\Psr7\Query;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
-use Mockery\Undefined;
+use Illuminate\Support\Facades\Gate;
+
 
 class PostController extends Controller
 {
@@ -45,7 +44,7 @@ class PostController extends Controller
         $request->validate([
             'title' => 'required',
             'content' => 'required',
-            'image' => 'mimes:jpeg,jpg,png,gif,mpeg|max:20000'
+            'image' => 'mimes:jpeg,jpg,png,gif,bmp,svg|max:20000'
         ]);
 
         $file_name = NULL;
@@ -94,7 +93,10 @@ class PostController extends Controller
      */
     public function edit(Post $post)
     {
-        //
+        if (!Gate::allows('update_edit-post', $post))
+            abort(403);
+
+        return view("posts.edit")->with('post', $post);
     }
 
     /**
@@ -106,7 +108,29 @@ class PostController extends Controller
      */
     public function update(Request $request, Post $post)
     {
-        //
+        if (!Gate::allows('update_edit-post', $post))
+            abort(403);
+
+        $request->validate([
+            'title' => 'required',
+            'content' => 'required',
+            'image' => 'mimes:jpeg,jpg,png,gif,bmp,svg|image|max:20000'
+        ]);
+
+        if ($request->updateImage) {
+            $file_name = NULL;
+            if ($post->image)
+                File::delete(public_path('images/' . $post->image));
+            if ($request->hasFile('image')) {
+                $file_name = time() . '-' . $request->file('image')->getClientOriginalName();
+                $request->image->move(public_path('images'), $file_name);
+            }
+            $post->update(['image' => $file_name]);
+        }
+        $post->update([
+            'title' => htmlspecialchars($request->title),
+            'content' => htmlspecialchars($request->content),
+        ]);
     }
 
     public function toggleLike(Post $post)
