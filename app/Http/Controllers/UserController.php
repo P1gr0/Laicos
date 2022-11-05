@@ -23,14 +23,13 @@ class UserController extends Controller
         //
     }
 
-    public function search($name){
-        $users = User::where('name', 'like', "%$name%")->get();
-        foreach($users as $user)
-            $user->image = $user->image ? $user->image : 'default.png';
-        return view('users.search')->with('users', $users);
+    public function search($name)
+    {
+        return view('users.search')->with('users', User::where('name', 'like', "%$name%")->get());
     }
 
-    public function getCounts(User $user){
+    public function getCounts(User $user)
+    {
         return [$user->posts->count(), $user->comments->count()];
     }
 
@@ -93,14 +92,18 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        //
         if($user == Auth::user()) return view('home')->with('user', $user);
         return view('users.show', ['user' => $user]);
     }
 
-    public function getPosts(User $user){
-        return $user->posts->sortByDesc('created_at')->values();
-/*         $result = $user->posts()->with('user')->orderBy('created_at', 'desc')->paginate(10); */
+    public function getPosts(User $user)
+    {
+        $posts = $user->posts()->with('user')->orderBy('created_at', 'desc')->paginate(10);
+        foreach($posts as $post){
+            $post->likes = $post->likeCount;
+            $post->liked = $post->liked($user->id);
+        }
+        return $posts;
     }
 
     /**

@@ -6,13 +6,10 @@ export default {
     },
     data() {
         return {
+            errors: undefined, success: '', imgName: '', openedPicker: false,
             newComment: {
                 content: ''
             },
-            errors: undefined,
-            success: '',
-            imgName: '',
-            openedPicker: false,
             pickerStyle: {
                 width: '100%',
                 numColumns: '8'
@@ -32,14 +29,15 @@ export default {
             }
             this.openedPicker = false;
             this.newComment.post_id = this.post_id;
-            axios.post('/comments/', this.newComment, config).then((response) => {
+            axios.post('/comments/', this.newComment, config).then(response => {
                 this.errors = undefined;
                 this.newComment = { content: '', image: undefined };
                 this.imgName = '';
-                this.success = "Wonderful! You posted a comment!"
+                this.success = "Wonderful! You posted a comment!";
                 this.$emit('create-comment', response.data);
             }).catch(error => {
                 this.errors = error.response.data.errors;
+                this.success = '';
             });
         },
         removeImage() {
@@ -48,9 +46,8 @@ export default {
         },
         getImage(e) {
             if (e.target.files[0]) {
-                let files = e.target.files[0] || e.dataTransfer.files;
-                this.newComment.image = files;
-                this.imgName = files.name;
+                this.newComment.image = e.target.files[0] || e.dataTransfer.files;
+                this.imgName = e.target.files[0].name;
             }
         }
     }
@@ -61,15 +58,15 @@ export default {
     <div class="card comment-cre">
         <div class="card-body p-2">
             <form @submit.prevent="createComment" enctype="multipart/form-data">
-                <textarea type="text" v-model="newComment.content" rows="3"
-                    style="height: 100%; width: 100%"></textarea>
+                <textarea type="text" v-model="newComment.content" rows="3" style="height: 100%; width: 100%"
+                    required></textarea>
                 <div v-if="imgName" class="my-2 py-2 d-flex align-items-center border ell">
                     <i class="tomato fa-solid fa-circle-xmark fa-lg m-1" @click="removeImage"></i>
                     <p class="text-white m-auto px-3">{{ imgName }}</p>
                 </div>
                 <div class="d-flex align-items-center my-0">
-                    <label class="px-1 btn-custom tomato">
-                        <i class="px-1 fa-solid fa-face-smile fa-lg" @click="openedPicker = !openedPicker"></i>
+                    <label class="px-1 btn-custom tomato" @click="openedPicker = !openedPicker">
+                        <i class="px-1 fa-solid fa-face-smile fa-lg"></i>
                     </label>
                     <label class="px-1 btn-custom tomato" for="image">
                         <i class="fa-solid fa-image"></i>

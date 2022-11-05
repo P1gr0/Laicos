@@ -11,7 +11,7 @@ export function timeSince(date) {
     if (interval > 1)
         return Math.floor(interval) + "d ago at " + time;
     interval = seconds / 3600;
-    if (interval > 1) return 'Today at' + time;
+    if (interval > 1) return 'Today at ' + time;
     interval = seconds / 60;
     if (interval > 1) return Math.floor(interval) + "min ago";
     return Math.floor(seconds) + "s ago";
@@ -31,9 +31,9 @@ export function dataURLtoFile(dataurl, filename) {
         n = bstr.length,
         u8arr = new Uint8Array(n);
 
-    while (n--) {
+    while (n--)
         u8arr[n] = bstr.charCodeAt(n);
-    }
+        
     return new File([u8arr], filename, { type: mime });
 }
 

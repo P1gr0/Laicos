@@ -6,14 +6,10 @@ export default {
     },
     data() {
         return {
+            opened: false, errors: undefined, success: '', imgName: '', openedPicker: false,
             newPost: {
                 content: ''
             },
-            opened: false,
-            errors: undefined,
-            success: "",
-            imgName: '',
-            openedPicker: false,
             pickerStyle: {
                 width: '100%',
                 numColumns: '8'
@@ -33,7 +29,7 @@ export default {
                 }
             }
             this.openedPicker = false;
-            axios.post('/posts/', this.newPost, config).then((response) => {
+            axios.post('/posts/', this.newPost, config).then(response => {
                 this.errors = undefined;
                 this.success = "Post created succesfully!";
                 this.newPost = { content: '', image: undefined };
@@ -41,7 +37,7 @@ export default {
                 this.$emit('create-post', response.data);
             }).catch(error => {
                 this.errors = error.response.data.errors;
-                this.success = ""
+                this.success = '';
             });
         },
         removeImage() {
@@ -50,9 +46,8 @@ export default {
         },
         getImage(e) {
             if (e.target.files[0]) {
-                let files = e.target.files[0] || e.dataTransfer.files;
-                this.newPost.image = files;
-                this.imgName = files.name;
+                this.newPost.image = e.target.files[0] || e.dataTransfer.files;
+                this.imgName = e.target.files[0].name;
             }
         }
     }
@@ -69,14 +64,14 @@ export default {
         </div>
         <div class="card-body bg-dark">
             <form @submit.prevent="createPost" enctype="multipart/form-data">
-                <h4 class="card-title"><input type="text" v-model="newPost.title" placeholder="title"></h4>
-                <textarea type="text" v-model="newPost.content" style="height: 100%; width: 100%"></textarea>
+                <h5 class="card-title"><input type="text" v-model="newPost.title" placeholder="title" required></h5>
+                <textarea type="text" v-model="newPost.content" style="height: 100%; width: 100%" required></textarea>
                 <div v-if="imgName" class="my-2 py-2 d-flex align-items-center border ell">
                     <i class="tomato fa-solid fa-circle-xmark fa-lg m-1" @click="removeImage"></i>
                     <p class="text-white m-auto px-3">{{ imgName }}</p>
                 </div>
-                <label class="px-1 btn-custom tomato">
-                    <i class="px-1 fa-solid fa-face-smile fa-lg" @click="openedPicker = !openedPicker"></i>
+                <label class="px-1 btn-custom tomato" @click="openedPicker = !openedPicker">
+                    <i class="px-1 fa-solid fa-face-smile fa-lg"></i>
                 </label>
                 <label class="px-1 btn-custom tomato" for="image"><i class="fa-solid fa-image"></i><input type="file"
                         @change="getImage" class="no-style" id="image"></label>

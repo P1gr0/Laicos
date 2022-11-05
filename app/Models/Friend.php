@@ -11,7 +11,4 @@ class Friend extends Model
 
     protected $fillable = ['user_id', 'friend_id', 'status'];
 
-    public function user(){
-        return $this->belongsTo('App/Http/Models/User');
-    }
 }

@@ -10,45 +10,23 @@ use Illuminate\Support\Facades\Auth;
 class FriendController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of the friend requests received for the authenticated user.
      *
      * @return \Illuminate\Http\Response
      */
     public function index()
     {
-        $friends = [];
-        $requests = Friend::where([['friend_id', Auth::user()->id], ['status', 'pending']])->get();
-        foreach ($requests as $request) {
-            $friend = User::find($request->user_id);
-            $friends[] = [
-                'id' => $friend->id, 
-                'image' => $friend->image ? $friend->image : 'default.png', 
-                'name' => $friend->name];
-        }
-
-        return $friends;
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-
+        return User::whereIn('id', Friend::where([['friend_id', Auth::user()->id], ['status', 'pending']])->select('user_id'))->get();
     }
 
     public function getStatus($id)
     {
         if ($friend = Friend::where([['user_id', Auth::user()->id], ['friend_id', $id]])->first())
             return ($friend->status == 'pending') ? 'Request sent' : 'Friend';
-
-        if ($friend = Friend::where([['friend_id', Auth::user()->id], ['user_id', $id]])->first())
+        else if ($friend = Friend::where([['friend_id', Auth::user()->id], ['user_id', $id]])->first())
             return ($friend->status == 'pending') ? 'Request received' : 'Friend';
-
-        return '';
+        else
+            return '';
     }
 
     /**
@@ -81,34 +59,7 @@ class FriendController extends Controller
      */
     public function show($user_id)
     {
-        $friends = [];
-        $friendships = Friend::where([['user_id', $user_id], ['status', 'accepted']])
-            ->orWhere([['friend_id', $user_id], ['status', 'accepted']])
-            ->get();
-
-        foreach ($friendships as $friendship) {
-            if ($friendship->user_id != $user_id) $friend = User::find($friendship->user_id);
-            else $friend = User::find($friendship->friend_id);
-            $friends[] = ['id' => $friend->id, 'image' => $friend->image, 'name' => $friend->name];
-        }
-
-        return $friends;
-    }
-
-    public function countRequests(){
-        return Friend::where([['friend_id', Auth::user()->id], ['status', 'pending']])
-        ->count();
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Friend  $friend
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($friend_id)
-    {
-        //
+        return User::find($user_id)->friends()->get();
     }
 
     /**

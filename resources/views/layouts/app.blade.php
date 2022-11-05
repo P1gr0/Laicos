@@ -19,6 +19,7 @@
 </head>
 
 <body>
+    <script>0</script>
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-light bg-post shadow-sm">
             <div class="container">
@@ -28,6 +29,10 @@
                 @auth
                     <a class="navbar-brand" href="{{ url('/home') }}">
                         <i class="tomato fa-solid fa-house-user fa-lg"></i>
+                    </a>
+                   
+                    <a class="navbar-brand" href="{{ url('/chat') }}" style="color: rgb(157, 167, 173)">
+                        <i class="tomato fa-solid fa-message fa"></i>
                     </a>
 
                     <!-- Component shows friend requests received -->
@@ -43,7 +48,7 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
                     <div class="navbar-nav me-auto">
-
+                   
                     </div>
 
                     <!-- Right Side Of Navbar -->
@@ -68,7 +73,7 @@
                                     {{ Auth::user()->name }}
                                 </a>
 
-                                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                <div class="m-0 dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                         onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
@@ -89,7 +94,7 @@
             <search-user></search-user>
         @endauth
 
-        <main class="py-4">
+        <main class="py-2">
             @yield('content')
         </main>
     </div>

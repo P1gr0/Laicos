@@ -1,5 +1,5 @@
 // Fonts
-@import url('https://fonts.bunny.net/css?family=Nunito');
+@import 'fonts';
 
 // Variables
 @import 'variables';
@@ -35,7 +35,6 @@
     border: .1em solid rgb(0, 0, 0);
     margin: .5em;
     background: transparent;
-    
 }
 
 .btn-custom {

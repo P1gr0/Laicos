@@ -11,7 +11,7 @@
                     <button class="rad" role="button" @click.prevent="showFileChooser">
                         Upload Image!
                     </button>
-                    <button v-if="this.user_image != 'default.png'" class="rad" role="button" @click.prevent="rmvImage">
+                    <button v-if="this.user_image" class="rad" role="button" @click.prevent="rmvImage">
                         Remove current Image!
                     </button>
                     <div v-if="imgSrc" class="content container row">

@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Events\MessageSent;
 
 use App\Models\Message;
@@ -20,21 +21,22 @@ class ChatsController extends Controller
         return view('chat');
     }
 
-    public function fetchMessages()
+    public function fetchMessages($receiver_id)
     {
-        return Message::with('user')->get();
+      return Message::where([['user_id', Auth::user()->id], ['receiver_id', $receiver_id]])
+            ->orWhere([['user_id', $receiver_id], ['receiver_id', Auth::user()->id]])->get();
     }
 
     public function sendMessage(Request $request)
     {
         $message = Message::create([
             'message' => $request->input('message'),
-            'user_id' => $request->user()->id
+            'user_id' => $request->user()->id,
+            'receiver_id' => $request->receiver_id
         ]);
 
         broadcast(new MessageSent(Auth::user(), $message))->toOthers();
-        
-        return ['status' => 'Message Sent!'];
-       
+
+        return $message;
     }
 }

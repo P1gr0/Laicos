@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Post;
+use App\Models\User;
 use App\Models\Comment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -9,16 +11,10 @@ use Illuminate\Support\Facades\File;
 
 class CommentController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    public function __construct()
     {
-        //
+        $this->middleware('auth');
     }
-
 
     /**
      * Store a newly created resource in storage.
@@ -30,7 +26,7 @@ class CommentController extends Controller
     {
         $request->validate([
             'content' => 'required',
-            'image' => 'mimes:jpeg,jpg,png,gif,mpeg,mp4|image|max:30000'
+            'image' => 'mimes:jpeg,jpg,png,gif,mpeg|image|max:20000'
         ]);
 
         $file_name = NULL;
@@ -47,10 +43,10 @@ class CommentController extends Controller
             'post_id' => $request->post_id
         ]);
 
-        $comment->is_author = $comment->isAuthor();
+        $comment->is_author = true;
         $comment->user = $request->user();
-        $comment->user_image = empty($request->user()->image) ? 'default.png' : $request->user()->image;
-        
+        $comment->likes = 0;
+
         return $comment;
     }
 
@@ -61,9 +57,24 @@ class CommentController extends Controller
         $comment->save();
     }
 
+    //return users who liked a post
     public function getLikes(Comment $comment)
     {
-        return [$comment->likeCount, $comment->liked(Auth::user()->id)];
+        foreach ($comment->likes as $like)
+            $users[] = User::find($like->user_id);
+        return empty($users) ? [] : $users;
+    }
+
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  \App\Models\Comment  $comment
+     * @return \Illuminate\Http\Response
+     */
+    public function edit(Comment $comment)
+    {
+        //
     }
 
     /**
@@ -86,9 +97,8 @@ class CommentController extends Controller
      */
     public function destroy(Comment $comment)
     {
-        if(File::exists(public_path('images/' . $comment->image))){
+        if ($comment->image)
             File::delete(public_path('images/' . $comment->image));
-        }
         $comment->delete();
     }
 }

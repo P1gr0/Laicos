@@ -1,12 +1,11 @@
 <template>
-    <button class="btn-dodg tomato" data-bs-toggle="modal" data-bs-target="#req" aria-expanded="false"
-        @click="getRequests">
+    <button class="btn-dodg tomato" data-bs-toggle="modal" data-bs-target="#req" aria-expanded="false">
         <i class="fa-solid fa-people-pulling fa-xl">
-            <span v-if="counter" class="counter-lg">{{ counter }}</span>
+            <span v-if="requests.length" class="counter-lg">{{ requests.length }}</span>
         </i>
     </button>
 
-    <div class="modal fade" id="req" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="req" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -14,10 +13,11 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body p-2">
-                    <p class="text-center" v-if="!counter">No pending friend requests</p>
+                    <p class="text-center" v-if="!requests.length">No pending friend requests</p>
                     <ul class="list-group">
                         <li v-for="request in requests" class="d-flex tomato list-group-item">
-                            <img class="rounded-circle img-fluid me-2" :src="`/images/profile/${request.image}`"
+                            <img class="rounded-circle img-fluid me-2"
+                                :src="request.image ? `/images/profile/${request.image}` : `https://robohash.org/${request.name}.png?set=set4`"
                                 data-holder-rendered="true" width="30">
                             <a class="px-0 fs-5" :href="`/users/${request.id}`">{{ request.name }}</a>
                         </li>
@@ -26,35 +26,26 @@
             </div>
         </div>
     </div>
-
-
-
 </template>
+
 <script>
 export default {
     data() {
         return {
-            counter: 0,
             requests: []
         }
     },
     mounted() {
-        this.countRequests()
+        this.getRequests();
     },
     methods: {
-        countRequests() {
-            axios.get('/countreq').then((response) => {
-                this.counter = response.data;
-            })
-        },
         getRequests() {
-            axios.get('/friendship').then((response) => {
+            axios.get('/friendship').then(response => {
                 this.requests = response.data;
             })
         }
     }
 }
-
 </script>
 
 <style scoped>

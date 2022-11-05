@@ -1,36 +1,43 @@
 <template>
-    <!-- Display an input field and a send button. -->
     <div class="input-group">
-        <!--  Call sendMessage() when the enter key is pressed.  -->
-        <input id="btn-input" type="text" name="message" class="form-control input-sm"
-            placeholder="Type your message here..." v-model="newMessage" @keyup.enter="sendMessage" />
+        <input id="btn-input" type="text" class="form-control" placeholder="Type your message here..."
+            v-model="newMessage" @keyup.enter="sendMessage" />
         <span class="input-group-btn">
-            <button class="btn btn-primary btn-sm" id="btn-chat" @click="sendMessage">
-                Send
-            </button>
+            <button class="send tomato ms-0 mt-0 px-2" @click="sendMessage">Send</button>
         </span>
     </div>
 </template>
+
 <script>
 export default {
-    //Takes the "user" props from <chat-form> … :user="{{ Auth::user() }}"></chat-form> in the parent chat.blade.php.
-    props: ["user"],
+    props: ["user", 'receiver_id'],
     data() {
         return {
             newMessage: "",
-        };
+        }
     },
     methods: {
         sendMessage() {
             //Emit a "messagesent" event including the user who sent the message along with the message content
             this.$emit("messagesent", {
                 user: this.user,
-                //newMessage is bound to the earlier "btn-input" input field
-                message: this.newMessage,
-            });
+                receiver_id: this.receiver_id,
+                message: this.newMessage
+            })
             //Clear the input
             this.newMessage = "";
-        },
-    },
-};
+        }
+    }
+}
 </script>
+
+<style scoped>
+.send {
+    background-color: #8AAFCC;
+    height: 100%;
+    width: 100%;
+    border-style: none;
+    border-top-right-radius: 6px;
+    border-bottom-right-radius: 6px;
+}
+</style>

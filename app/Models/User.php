@@ -47,17 +47,18 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-           
-    public function posts(){
+
+    public function posts()
+    {
         return $this->hasMany('App\Models\Post');
     }
-    public function comments(){
+    public function comments()
+    {
         return $this->hasMany('App\Models\Comment');
     }
-    public function friends(){
-        return $this->hasMany('App\Models\Friend');
-    }
-    public function messages(){
-        return $this->hasMany('App\Models\Message');
-    }    
+    function friends()
+    {
+        return $this->hasManyThrough('App\Models\User', 'App\Models\Friend', 'friend_id', 'id', null, 'user_id')->select('users.*')->where('status', 'accepted')
+          ->union($this->hasManyThrough('App\Models\User', 'App\Models\Friend', 'user_id', 'id', null, 'friend_id')->where('status', 'accepted')->select('users.*', 'friends.user_id as laravel_through_key'));
+     }
 }

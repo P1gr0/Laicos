@@ -1,9 +1,8 @@
 <template>
-    <div class="tomato" :class="liked ? 'liked' : '' " 
-     @click="toggle()">
-            <p class="my-0">
-                <i class="fa-regular fa-heart"></i> {{ likes }}
-            </p>
+    <div class="tomato" :class="liked_up ? 'liked' : ''" @click="toggle()">
+        <p class="my-0">
+            <i class="fa-regular fa-heart"></i> {{ likes_up }}
+        </p>
     </div>
 </template>
 
@@ -18,26 +17,21 @@ import axios from 'axios';
 export default {
     data() {
         return {
-            likes: 0,
-            liked: false
+            likes_up: undefined,
+            liked_up: undefined
         }
     },
     mounted() {
-        this.getLikes();
+        this.likes_up = this.likes;
+        this.liked_up = this.liked;
     },
-    props: ['id', 'baseUrl'],
+    props: ['likes', 'liked', 'baseUrl', 'id'],
     methods: {
-        getLikes() {
-            axios.get(this.baseUrl + "/getlikes/" + this.id).then((response) => {
-                this.likes = response.data[0];
-                this.liked = response.data[1];
-            });
-        },
         toggle() {
             axios.post(this.baseUrl + '/togglelike/' + this.id).then((response) => {
-                if(this.liked) this.likes--;
-                else this.likes++;
-                this.liked = !this.liked;
+                if (this.liked_up) this.likes_up--;
+                else this.likes_up++;
+                this.liked_up = !this.liked_up;
             });
         }
     }

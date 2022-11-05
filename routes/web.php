@@ -27,14 +27,14 @@ Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-Route::resource('/posts', PostController::class);
-Route::post('posts/togglelike/{post}', [PostController::class,'toggleLike']);
-Route::get('posts/getlikes/{post}', [PostController::class,'getLikes']);
-Route::get('posts/{post}/comments', [PostController::class,'getComments']);
+Route::resource('/posts', PostController::class)->except('create');
+Route::post('posts/togglelike/{post}', [PostController::class, 'toggleLike']);
+Route::get('posts/getlikes/{post}', [PostController::class, 'getLikes']);
+Route::get('posts/{post}/comments', [PostController::class, 'getComments']);
 
-Route::resource('/comments', CommentController::class);
-Route::post('comments/togglelike/{comment}', [CommentController::class,'toggleLike']);
-Route::get('comments/getlikes/{comment}', [CommentController::class,'getLikes']);
+Route::resource('/comments', CommentController::class)->except(['index', 'create']);
+Route::post('comments/togglelike/{comment}', [CommentController::class, 'toggleLike']);
+Route::get('comments/getlikes/{comment}', [CommentController::class, 'getLikes']);
 
 Route::resource('/users', UserController::class);
 Route::post('setimage', [UserController::class, 'setImage']);
@@ -43,12 +43,9 @@ Route::get('getcounts/{user}', [UserController::class, 'getCounts']);
 Route::get('getposts/{user}', [UserController::class, 'getPosts']);
 Route::get('search/{name}', [UserController::class, 'search']);
 
-Route::resource('/friendship', FriendController::class);
+Route::resource('/friendship', FriendController::class)->except(['edit', 'create']);
 Route::get('getstatus/{id}', [FriendController::class, 'getStatus']);
-Route::get('countreq', [FriendController::class, 'countRequests']);
 
 Route::get('/chat', [ChatsController::class, 'index']);
-Route::get('/messages', [ChatsController::class, 'fetchMessages']);
+Route::get('/messages/{receiver}', [ChatsController::class, 'fetchMessages']);
 Route::post('/messages', [ChatsController::class, 'sendMessage']);
-
-

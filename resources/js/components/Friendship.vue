@@ -1,22 +1,24 @@
 <template>
-    <div class="mb-7">
-        <h5>{{ status }}</h5>
-        <button class="btn btn-friend" v-if="status == 'Request received'" @click="interact(true)">
+    <div style="height: 60%">
+        <h5 class="mb-0">{{ status }}</h5>
+        <button class="btn btn-custom tomato" v-if="status == 'Request received'" @click="interact(true)">
             Accept
         </button>
-        <button class="btn btn-friend" @click="interact(false)">
+        <button class="mt-1 btn btn-custom tomato" @click="interact(false)">
             {{ message }}
         </button>
+        <div>
+            <a v-if="status == 'Friend'" type="button" class="btn btn-bl tomato" href="/chat">
+               Chat! <i style="color: rgb(157, 167, 173)" class="fa-solid fa-message fa"></i>
+            </a>
+        </div>
     </div>
 </template>
 
 <style scoped>
-.btn-friend {
-    color: white;
+.btn-custom {
+    font-weight: bold;
     background-color: dodgerblue;
-    border: none;
-    border-radius: 10%;
-    margin: .5em;
 }
 </style>
 
@@ -30,8 +32,14 @@ export default {
             message: ''
         }
     },
-    mounted() {
-        this.getStatus();
+    watch: {
+        user_id: {
+            handler: function () {
+                this.getStatus();
+            },
+            deep: true,
+            immediate: true
+        }
     },
     methods: {
         getStatus() {
