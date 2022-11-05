@@ -1,4 +1,4 @@
-images/*
-!images/logo/logo.png
-images/profile/*
-!images/profile
+*
+!.gitignore
+!logo/logo.png
+!profile
