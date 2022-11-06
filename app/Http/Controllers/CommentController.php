@@ -75,9 +75,9 @@ class CommentController extends Controller
      */
     public function edit(Comment $comment)
     {
-        if (!Gate::allows('update_edit-comment', $comment))
-            abort(403);
-        
+        if (!Gate::allows('update_remove-comment', $comment))
+            abort(404);
+
         return view("comments.edit")->with('comment', $comment);
     }
 
@@ -90,15 +90,15 @@ class CommentController extends Controller
      */
     public function update(Request $request, Comment $comment)
     {
-        if (!Gate::allows('update_edit-comment', $comment))
+        if (!Gate::allows('update_remove-comment', $comment))
             abort(403);
-        
+
         $request->validate([
             'content' => 'required',
             'image' => 'mimes:jpeg,jpg,png,gif,bmp,svg|image|max:20000'
         ]);
 
-        if($request->updateImage) {
+        if ($request->updateImage) {
             $file_name = NULL;
             if ($comment->image)
                 File::delete(public_path('images/' . $comment->image));
@@ -120,6 +120,8 @@ class CommentController extends Controller
      */
     public function destroy(Comment $comment)
     {
+        if (!Gate::allows('update_remove-comment', $comment))
+            abort(403);
         if ($comment->image)
             File::delete(public_path('images/' . $comment->image));
         $comment->delete();

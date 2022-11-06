@@ -35,7 +35,8 @@ class User extends Authenticatable
         'created_at',
         'email',
         'email_verified_at',
-        'updated_at'
+        'updated_at',
+        'admin'
     ];
 
     /**

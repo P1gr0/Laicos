@@ -30,10 +30,10 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
 
         //Grant authorization to edit post/comment only to the user that created.
-        Gate::define('update_edit-post', function (User $user, Post $post) {
+        Gate::define('update_remove-post', function (User $user, Post $post) {
             return $user->id === $post->user_id;
         });
-        Gate::define('update_edit-comment', function (User $user, Comment $comment) {
+        Gate::define('update_remove-comment', function (User $user, Comment $comment) {
             return $user->id === $comment->user_id;
         });
     }

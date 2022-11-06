@@ -19,7 +19,6 @@
 </head>
 
 <body>
-    <script>0</script>
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-light bg-post shadow-sm">
             <div class="container">

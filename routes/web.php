@@ -36,7 +36,7 @@ Route::resource('/comments', CommentController::class)->except(['index', 'create
 Route::post('comments/togglelike/{comment}', [CommentController::class, 'toggleLike']);
 Route::get('comments/getlikes/{comment}', [CommentController::class, 'getLikes']);
 
-Route::resource('/users', UserController::class);
+Route::get('users/{user}', [UserController::class, 'show']);
 Route::post('setimage', [UserController::class, 'setImage']);
 Route::put('rmvimage/{user}', [UserController::class, 'deleteImage']);
 Route::get('getcounts/{user}', [UserController::class, 'getCounts']);
@@ -49,3 +49,11 @@ Route::get('getstatus/{id}', [FriendController::class, 'getStatus']);
 Route::get('/chat', [ChatsController::class, 'index']);
 Route::get('/messages/{receiver}', [ChatsController::class, 'fetchMessages']);
 Route::post('/messages', [ChatsController::class, 'sendMessage']);
+
+//SISTEMA
+Route::middleware('admin')->group(function() {
+    Route::get('/admin', function() {
+        return view('admin');
+    });
+    Route::resource('/users', UserController::class)->only(['index', 'destroy', 'update']);
+});

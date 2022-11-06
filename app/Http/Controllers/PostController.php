@@ -93,8 +93,8 @@ class PostController extends Controller
      */
     public function edit(Post $post)
     {
-        if (!Gate::allows('update_edit-post', $post))
-            abort(403);
+        if (!Gate::allows('update_remove-post', $post))
+            abort(404);
 
         return view("posts.edit")->with('post', $post);
     }
@@ -108,7 +108,7 @@ class PostController extends Controller
      */
     public function update(Request $request, Post $post)
     {
-        if (!Gate::allows('update_edit-post', $post))
+        if (!Gate::allows('update_remove-post', $post))
             abort(403);
 
         $request->validate([
@@ -157,6 +157,9 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
+        if (!Gate::allows('update_remove-post', $post))
+            abort(403);
+
         if ($post->image)
             File::delete(public_path('images/' . $post->image));
         $post->delete();

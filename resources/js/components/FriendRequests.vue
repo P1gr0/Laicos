@@ -1,6 +1,6 @@
 <template>
-    <button class="btn-dodg tomato" data-bs-toggle="modal" data-bs-target="#req" aria-expanded="false">
-        <i class="fa-solid fa-people-pulling fa-xl">
+    <button class="btn-dodg" data-bs-toggle="modal" data-bs-target="#req" aria-expanded="false">
+        <i class="fa-solid fa-people-pulling fa-xl tomato">
             <span v-if="requests.length" class="counter-lg">{{ requests.length }}</span>
         </i>
     </button>
@@ -50,9 +50,11 @@ export default {
 
 <style scoped>
 .btn-dodg {
+    all: unset;
     color: dodgerblue;
     cursor: pointer;
     border: none;
+    background-color: transparent;
 }
 
 .counter-lg {

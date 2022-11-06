@@ -20,7 +20,8 @@ class UserController extends Controller
      */
     public function index()
     {
-        //
+        /* return view('admin')->with('users', User::all()->except(Auth::id())->makeVisible('email')); */
+        return User::all()->except(Auth::id())->makeVisible('email');
     }
 
     public function search($name)
@@ -45,7 +46,7 @@ class UserController extends Controller
             $request->image->move(public_path('images/profile'), $file_name);
         }
 
-        if($request->user()->image)
+        if ($request->user()->image)
             File::delete(public_path('images/profile/' . $request->user()->image));
 
         $request->user()->update([
@@ -55,33 +56,12 @@ class UserController extends Controller
 
     public function deleteImage(Request $request, User $user)
     {
-        if($request->user()->image){
+        if ($request->user()->image) {
             File::delete(public_path('images/profile/' . $request->user()->image));
             $user->update([
                 "image" => null
             ]);
         }
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
     }
 
     /**
@@ -92,29 +72,18 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        if($user == Auth::user()) return view('home')->with('user', $user);
+        if ($user == Auth::user()) return view('home')->with('user', $user);
         return view('users.show', ['user' => $user]);
     }
 
     public function getPosts(User $user)
     {
         $posts = $user->posts()->with('user')->orderBy('created_at', 'desc')->paginate(10);
-        foreach($posts as $post){
+        foreach ($posts as $post) {
             $post->likes = $post->likeCount;
             $post->liked = $post->liked($user->id);
         }
         return $posts;
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(User $user)
-    {
-        //
     }
 
     /**
@@ -126,7 +95,18 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        //
+        $request->validate([
+            'name' => 'required',
+            'email' => 'required',
+        ]);
+
+        $user->update([
+            'name' => $request->name,
+            'email' => $request->email,
+            'image' => $request->image
+        ]);
+
+        return redirect('/admin')->with('success', 'User updated successfully!');
     }
 
     /**
@@ -137,6 +117,7 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        //
+        $user->delete();
+        return redirect('/admin')->with('success', 'User removed successfully!');
     }
 }
