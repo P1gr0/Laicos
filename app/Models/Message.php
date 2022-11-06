@@ -11,7 +11,4 @@ class Message extends Model
 
     protected $fillable = ['message', 'user_id', 'receiver_id'];
 
-    public function user(){
-        return $this->belongsToMany('App\Models\User', 'messages', ['receiver_id', 'user_id']);
-    }
 }

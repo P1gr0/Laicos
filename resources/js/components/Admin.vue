@@ -40,6 +40,8 @@ export default {
             if (confirm('User will be removed permanently along with messages, posts and comments. Are you sure?'))
                 axios.delete("/users/" + this.id).then(() => {
                     this.users = this.users.filter(o => o.id !== e);
+                    this.errors = '';
+                    this.success = response.data;
                 });
         },
         editUser(user) {

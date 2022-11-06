@@ -20,7 +20,6 @@ class UserController extends Controller
      */
     public function index()
     {
-        /* return view('admin')->with('users', User::all()->except(Auth::id())->makeVisible('email')); */
         return User::all()->except(Auth::id())->makeVisible('email');
     }
 
